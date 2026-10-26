@@ -137,3 +137,18 @@ export function analyse(drive, speeds) {
 export function canMoveSideways(drive) {
   return drive !== 'skid';
 }
+
+/**
+ * Move a robot pose by one time step. Pose = { X, Y, theta } on the map (X right, Y forward, theta CCW, radians).
+ * vel = { vx, vy, omega } in the robot frame. Each axis stops at +-edge (so the robot can slide along a wall).
+ */
+export function stepPose(pose, vel, dt, edge = Infinity) {
+  const c = Math.cos(pose.theta), s = Math.sin(pose.theta);
+  const nx = pose.X + (vel.vx * c - vel.vy * s) * dt;
+  const ny = pose.Y + (vel.vx * s + vel.vy * c) * dt;
+  return {
+    X: Math.abs(nx) <= edge ? nx : pose.X,
+    Y: Math.abs(ny) <= edge ? ny : pose.Y,
+    theta: pose.theta + vel.omega * dt,
+  };
+}

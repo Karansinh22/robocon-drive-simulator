@@ -49,6 +49,7 @@ button { font: inherit; }
   background: #fff; color: var(--primary); font-weight: 700; cursor: pointer;
   touch-action: manipulation; user-select: none;
 }
+.btn { display: inline-flex; align-items: center; justify-content: center; text-align: center; text-decoration: none; }
 .btn:hover:not(:disabled):not(.on):not([aria-pressed="true"]) { background: var(--panel); }
 .btn:active:not(:disabled) { transform: scale(0.97); }
 .btn.on, .btn[aria-pressed="true"] { background: var(--primary); color: #fff; }

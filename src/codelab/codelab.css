@@ -1,0 +1,135 @@
+/* Code Lab page. Reuses the theme variables and .btn from ../styles.css. */
+body.lab-page { overflow: hidden; }
+#lab { display: flex; flex-direction: column; height: 100vh; }
+
+#topbar {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  padding: 8px 12px; background: var(--panel); border-bottom: 4px solid var(--primary);
+}
+#topbar .title { font-size: 24px; font-weight: 800; margin-right: 6px; white-space: nowrap; }
+#topbar .group { display: flex; gap: 6px; align-items: center; }
+#topbar .sep { width: 2px; align-self: stretch; background: #c5d6f0; margin: 0 4px; }
+#topbar .btn { min-height: 48px; padding: 6px 14px; font-size: 20px; }
+#topbar .grow { flex: 1; }
+.chip { display: inline-block; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 18px; background: #fff; border: 3px solid var(--primary); white-space: nowrap; }
+.chip.running { background: var(--primary); color: #fff; }
+.chip.error { background: #b91c1c; border-color: #b91c1c; color: #fff; }
+
+#loadBar { background: var(--dark); color: #fff; padding: 8px 14px; font-size: 20px; font-weight: 700; }
+#loadBar .track { height: 12px; background: #1e3a66; border-radius: 6px; margin-top: 6px; overflow: hidden; }
+#loadBar .fill { height: 100%; width: 0; background: #60a5fa; transition: width 0.3s; }
+
+#labMain { flex: 1; min-height: 0; display: grid; grid-template-columns: 45% 55%; }
+#left { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-right: 4px solid var(--primary); }
+
+#editorBar { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 8px; background: #fff; border-bottom: 2px solid var(--panel); align-items: center; }
+#editorBar .btn { min-height: 48px; padding: 4px 12px; font-size: 18px; }
+#editorBar select {
+  min-height: 48px; font-size: 18px; font-weight: 700; color: var(--primary);
+  border: 3px solid var(--primary); border-radius: 14px; background: #fff; padding: 0 10px; max-width: 100%;
+}
+
+#exerciseBox { background: var(--panel); border-left: 8px solid var(--primary); padding: 8px 12px; font-size: 18px; }
+#exerciseBox .ex-title { font-weight: 800; }
+#exerciseBox .ex-reveal { margin-top: 6px; font-weight: 600; }
+#exerciseBox .btn { min-height: 48px; font-size: 18px; margin-top: 6px; }
+#errorBanner { background: #b91c1c; color: #fff; padding: 8px 12px; font-size: 18px; font-weight: 700; }
+#warnBadge { background: #fde047; color: #5b4300; padding: 8px 12px; font-size: 18px; font-weight: 700; border-bottom: 3px solid #eab308; }
+
+#editor { flex: 1; min-height: 120px; overflow: hidden; background: #fff; }
+#editor .cm-editor { height: 100%; font-size: var(--editor-font, 20px); }
+#editor .cm-scroller { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; line-height: 1.45; }
+#editor .cm-gutters { background: var(--panel); color: #5b7aa8; border-right: 2px solid #c5d6f0; }
+#editor .cm-activeLine { background: #f3f8ff; }
+#editor .cm-activeLineGutter { background: #dbe8fb; }
+#editor .cm-error-line { background: #fecaca !important; box-shadow: inset 6px 0 0 #b91c1c; }
+#editor .cm-editor.cm-focused { outline: 3px solid var(--primary); outline-offset: -3px; }
+
+#bottom { height: 42%; min-height: 240px; display: flex; flex-direction: column; border-top: 4px solid var(--primary); }
+#tabBar { display: flex; gap: 6px; padding: 6px 8px; background: var(--panel); }
+#tabBar .btn { flex: 1; min-height: 48px; font-size: 18px; padding: 4px 8px; }
+#tabBody { flex: 1; min-height: 0; overflow: auto; padding: 8px 10px; font-size: 18px; background: #fff; }
+.tabpane[hidden] { display: none; }
+
+/* console */
+#console .line { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 18px; white-space: pre-wrap; word-break: break-word; padding: 1px 0; }
+#console .line.error { color: #b91c1c; font-weight: 700; }
+#console .line.warn { color: #8a6500; font-weight: 700; }
+#console .line.info { color: var(--primary); font-weight: 700; }
+#console .empty { color: #5b7aa8; }
+
+/* tests */
+.tests-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.score { font-size: 24px; font-weight: 800; }
+table.tests { width: 100%; border-collapse: collapse; font-size: 18px; }
+table.tests th { text-align: left; background: var(--panel); padding: 4px 8px; }
+table.tests td { padding: 4px 8px; border-bottom: 1px solid #dbe5f5; font-family: ui-monospace, Menlo, Consolas, monospace; }
+tr.pass td:last-child { color: #15803d; font-weight: 800; }
+tr.fail { background: #fef2f2; }
+tr.fail td:last-child { color: #b91c1c; font-weight: 800; }
+tr.pass { background: #f0fdf4; }
+.note { font-family: system-ui, sans-serif; font-size: 16px; color: #475569; }
+.tests h3 { margin: 12px 0 4px; font-size: 20px; }
+
+/* graph */
+.graph-wrap { display: flex; flex-direction: column; height: 100%; }
+.graph-wrap canvas { flex: 1; width: 100%; min-height: 150px; }
+.graph-wrap label { font-weight: 600; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-height: 40px; }
+.graph-wrap input[type="checkbox"], .tuning input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--primary); }
+
+/* tuning */
+.tuning .param { display: grid; grid-template-columns: 150px 1fr 90px; align-items: center; gap: 10px; min-height: 52px; }
+.tuning .param .pname { font-weight: 800; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.tuning .param input[type="range"] { width: 100%; height: 44px; accent-color: var(--primary); }
+.tuning .param .pval { font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
+.tuning .empty { color: #475569; }
+.tuning code { background: var(--panel); padding: 2px 6px; border-radius: 6px; }
+
+/* view side */
+body.lab-page #view { min-width: 0; min-height: 0; }
+#readout .io { font-size: 18px; margin-top: 4px; font-family: ui-monospace, Menlo, Consolas, monospace; color: #334155; }
+#viewToggles { position: absolute; left: 50%; transform: translateX(-50%); bottom: 14px; display: flex; gap: 8px; }
+#viewToggles .btn { min-height: 48px; font-size: 18px; padding: 4px 12px; }
+#camBar .btn { min-height: 48px; font-size: 18px; }
+
+.dock { position: absolute; bottom: 14px; display: flex; gap: 10px; align-items: flex-end; }
+.dock-left { left: 14px; }
+.dock-right { right: 14px; }
+.dock-card { background: rgba(255,255,255,0.95); border: 3px solid var(--primary); border-radius: 14px; padding: 10px 14px; font-size: 18px; max-width: 360px; }
+.dock-card .btn { min-height: 48px; font-size: 18px; margin-top: 6px; }
+.dock-card select { min-height: 48px; font-size: 18px; width: 100%; border: 3px solid var(--primary); border-radius: 12px; background: #fff; color: var(--primary); font-weight: 700; }
+.dock-card .live { font-family: ui-monospace, Menlo, Consolas, monospace; margin-top: 6px; }
+
+/* joystick pads */
+.pad { text-align: center; user-select: none; background: rgba(255,255,255,0.85); border-radius: 18px; padding: 4px 8px 6px; }
+.pad-title { font-size: 18px; font-weight: 800; color: var(--dark); }
+.pad-base {
+  --size: clamp(150px, 24vh, 230px);
+  width: var(--size); height: var(--size); border-radius: 50%; position: relative; margin: 2px auto;
+  background: radial-gradient(circle, #fff 0%, var(--panel) 70%); border: 4px solid var(--primary);
+  touch-action: none; cursor: grab;
+}
+.pad-base::before, .pad-base::after { content: ""; position: absolute; background: #b7ccee; }
+.pad-base::before { left: 50%; top: 8%; bottom: 8%; width: 2px; }
+.pad-base::after { top: 50%; left: 8%; right: 8%; height: 2px; }
+.pad-slot { border-radius: 999px; height: calc(var(--size) * 0.4); margin-top: calc(var(--size) * 0.3); margin-bottom: calc(var(--size) * 0.3); }
+.pad-slot::before { display: none; }
+.pad-knob {
+  position: absolute; left: calc(50% - 28px); top: calc(50% - 28px); width: 56px; height: 56px; border-radius: 50%;
+  background: var(--primary); border: 4px solid #fff; box-shadow: 0 2px 8px rgba(15,39,71,0.4); pointer-events: none;
+}
+.pad-read { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; min-height: 1.4em; }
+
+/* narrow screens: stack */
+@media (max-width: 900px) {
+  body.lab-page { overflow: auto; }
+  #lab { height: auto; }
+  #labMain { display: block; }
+  #left { border-right: 0; }
+  #editor { height: 50vh; flex: none; }
+  #bottom { height: auto; min-height: 320px; }
+  body.lab-page #view { height: 80vh; min-height: 460px; border-top: 4px solid var(--primary); }
+  #readout { max-width: calc(100% - 28px); top: 70px; }
+  #viewToggles { left: 14px; transform: none; bottom: auto; top: 250px; flex-wrap: wrap; }
+  .tuning .param { grid-template-columns: 110px 1fr 70px; }
+}

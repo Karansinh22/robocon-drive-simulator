@@ -2,19 +2,7 @@
 // This file only touches the DOM and the shared `state` object – no Three.js.
 import { WHEELS, DRIVES, DRIVE_NAMES, signedSpeed, directionOf, isLeftWheel, canMoveSideways } from './kinematics.js';
 import { CHALLENGES, checkChallenge } from './challenges.js';
-
-/* ---------- tiny DOM helper ---------- */
-function el(tag, props = {}, ...children) {
-  const node = document.createElement(tag);
-  for (const [key, value] of Object.entries(props)) {
-    if (key === 'class') node.className = value;
-    else if (key === 'text') node.textContent = value;
-    else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
-    else node.setAttribute(key, value);
-  }
-  for (const child of children.flat()) if (child) node.append(child);
-  return node;
-}
+import { el } from './dom.js';
 
 /* ---------- content ---------- */
 const PRESETS = [
@@ -163,7 +151,8 @@ export function createUI(state, api) {
   // Tabs
   const tabExplore = el('button', { class: 'btn', text: 'Explore', onclick: () => setMode('explore') });
   const tabChallenge = el('button', { class: 'btn', text: 'Challenge', onclick: () => setMode('challenge') });
-  panel.append(el('div', { class: 'row tabs' }, tabExplore, tabChallenge));
+  const labLink = el('a', { class: 'btn', href: 'codelab.html', text: 'Code Lab ↗' });
+  panel.append(el('div', { class: 'row tabs' }, tabExplore, tabChallenge, labLink));
 
   // Drive selector
   for (const d of DRIVES) {
