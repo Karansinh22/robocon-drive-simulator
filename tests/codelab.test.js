@@ -186,16 +186,21 @@ describe('share links', () => {
     const link = buildShareLink('https://x.github.io/robocon-drive-simulator/codelab.html', code, 'mecanum');
     expect(link.startsWith('https://x.github.io/robocon-drive-simulator/codelab.html#drive=mecanum&code=')).toBe(true);
     const hash = new URL(link).hash;
-    expect(parseShareHash(hash)).toEqual({ drive: 'mecanum', code });
+    expect(parseShareHash(hash)).toEqual({ drive: 'mecanum', lang: 'python', code });
   });
   it('survives a "+" that a chat app turned into a space', () => {
     const link = buildShareLink('https://x/y.html', code, 'skid');
     const mangled = new URL(link).hash.replace(/\+/g, ' ');
-    expect(parseShareHash(mangled)).toEqual({ drive: 'skid', code });
+    expect(parseShareHash(mangled)).toEqual({ drive: 'skid', lang: 'python', code });
+  });
+  it('remembers the language and accepts Omni X', () => {
+    const link = buildShareLink('https://x/y.html', '#include <cmath>\nvoid mix4() {}', 'omni', 'cpp');
+    expect(link).toContain('&lang=cpp&');
+    expect(parseShareHash(new URL(link).hash)).toEqual({ drive: 'omni', lang: 'cpp', code: '#include <cmath>\nvoid mix4() {}' });
   });
   it('ignores hashes that are not share links', () => {
     expect(parseShareHash('')).toBeNull();
-    expect(parseShareHash('#drive=omni&code=abc')).toBeNull();
+    expect(parseShareHash('#drive=hexapod&code=abc')).toBeNull();
     expect(parseShareHash('#code=zzzz&drive=skid')).toBeNull();
   });
 });

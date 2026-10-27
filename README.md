@@ -14,13 +14,15 @@ npm run preview    # try the built site locally
 
 ## Code Lab (`codelab.html`)
 
-Students write their own Python mixing code (`mix(x, y)` for skid steer, `mix4(x, y, r)` for mecanum), run it in the browser and drive the 3D robot with it.
+Students write their own mixing code, run it in the browser and drive the 3D robot with it. Three drives (**Skid steer**, **Mecanum**, **Omni X**) and two languages (**Python**, **C++**).
 
-* Python runs with [Pyodide](https://pyodide.org) 314.0.7 from the jsDelivr CDN, inside a Web Worker. Needs internet the first time.
+* Skid steer: `mix(x, y)` gives the left and right side. Mecanum and Omni X: `mix4(x, y, r)` gives `fl, fr, rl, rr` (the same mixing works for both).
 * Inputs: x = right (+), y = forward (+), r = rotate **clockwise** (+), each -100..100. Outputs: -255..255, + = wheel rolls the robot forward.
+* **Python** runs with [Pyodide](https://pyodide.org) 314.0.7 from the jsDelivr CDN inside a Web Worker (needs internet the first time). It is only downloaded when Python is used.
+* **C++** runs in a small interpreter written for this project (`src/codelab/cpp/`), also in a Web Worker, with no download. Outputs come back through reference parameters (`int &left`). Mark a number as tunable with `PARAM int deadzone = 8;` (after `#define PARAM`). Supported: int/float/double/bool, arrays, functions, references, globals that keep their value between calls, if/for/while, `abs/min/max/round/constrain/map/sqrt/pow`, `printf`, `cout`, `Serial.println`. Not supported: classes, structs, pointers, templates, `switch`.
 * If a call takes longer than 500 ms the worker is killed, the robot stops and a new worker is started.
-* Tabs: Console, Tests, Live graph, Tuning (sliders for every number in a `PARAMS = {...}` dict).
-* Share link: the code is compressed (lz-string) into the URL hash.
+* Tabs: Console, Tests, Live graph, Tuning (sliders for every `PARAMS` entry / `PARAM` variable).
+* Share link: the code, drive and language are compressed (lz-string) into the URL hash.
 
 ## Files
 
@@ -29,7 +31,8 @@ Students write their own Python mixing code (`mix(x, y)` for skid steer, `mix4(x
 | `src/sim.js` | The 3D scene, robot and frame loop, shared by both pages. Wheel speeds enter in `wheelSpeeds()`. |
 | `src/codelab/runner.js` | Input -> function -> validation -> wheel speeds, and the tests (pure, unit-tested). |
 | `src/codelab/client.js` | Talks to the Python worker, with the watchdog. |
-| `src/codelab/worker.js` | The Pyodide web worker. |
+| `src/codelab/worker.js` | The Pyodide (Python) web worker. |
+| `src/codelab/cpp-worker.js`, `cpp/interpreter.js` | The C++ web worker and the C++ interpreter (pure JS, unit-tested). |
 | `src/codelab/ui.js` | Code Lab page: editor, tabs, inputs. |
 | `src/codelab/{editor,inputs,graph,examples,share}.js` | CodeMirror, joystick/gamepad/keyboard/scripts, live graph, starter code, saving and sharing. |
 

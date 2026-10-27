@@ -74,8 +74,8 @@ export class WorkerClient {
   }
 
   /** Run the student's module from scratch. Reply: { ok, error?, params? } */
-  load(code, fnName, nargs, argNames) {
-    return this.request({ type: 'load', code, fnName, nargs, argNames }, LOAD_TIMEOUT_MS);
+  load(code, fnName, nargs, argNames, extra = {}) {
+    return this.request({ type: 'load', code, fnName, nargs, argNames, ...extra }, LOAD_TIMEOUT_MS);
   }
 
   /** Call the student's function. Reply: { ok, value | notSequence | traceback+line, ms } */

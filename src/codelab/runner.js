@@ -12,9 +12,13 @@ import { TimeoutError } from './client.js';
 export const OUT_MAX = 255;
 export const SLOW_CALL_MS = 50;
 
+// Omni X uses the same mix4(x, y, r) as mecanum: the signs of the four wheels are the same for every motion.
+// `signature` is how the function must look in C++ (outputs are reference parameters).
+const MIX4 = { fn: 'mix4', args: ['x', 'y', 'r'], outputs: ['FL', 'FR', 'RL', 'RR'], signature: 'void mix4(int x, int y, int r, int &fl, int &fr, int &rl, int &rr)' };
 export const DRIVE_SPECS = {
-  skid: { fn: 'mix', args: ['x', 'y'], outputs: ['left', 'right'], label: 'Skid steer (mix)' },
-  mecanum: { fn: 'mix4', args: ['x', 'y', 'r'], outputs: ['FL', 'FR', 'RL', 'RR'], label: 'Mecanum (mix4)' },
+  skid: { fn: 'mix', args: ['x', 'y'], outputs: ['left', 'right'], signature: 'void mix(int x, int y, int &left, int &right)', label: 'Skid steer (mix)' },
+  mecanum: { ...MIX4, label: 'Mecanum (mix4)' },
+  omni: { ...MIX4, label: 'Omni X (mix4)' },
 };
 
 const ZERO = { FL: 0, FR: 0, RL: 0, RR: 0 };
@@ -103,7 +107,7 @@ export class Runner {
     const spec = DRIVE_SPECS[driveType];
     let reply;
     try {
-      reply = await this.client.load(code, spec.fn, spec.args.length, spec.args);
+      reply = await this.client.load(code, spec.fn, spec.args.length, spec.args, { nOut: spec.outputs.length, signature: spec.signature });
     } catch (e) {
       this._fail(e instanceof TimeoutError
         ? { kind: 'timeout', message: 'Your code took too long — is there an infinite loop?' }
@@ -193,6 +197,8 @@ export const TABLE_TESTS = {
   ],
 };
 
+TABLE_TESTS.omni = TABLE_TESTS.mecanum;
+
 export const TEST_TOLERANCE = 1;
 
 // Each table row holds its input for a moment, so a student's ramp has time to reach full speed.
@@ -260,6 +266,8 @@ export const BEHAVIOUR_TESTS = {
     { name: 'Release stick → stops', input: releaseAfterOneSecond(100), check: still },
   ],
 };
+
+BEHAVIOUR_TESTS.omni = BEHAVIOUR_TESTS.mecanum;
 
 export const BEHAVIOUR_SECONDS = 2;
 

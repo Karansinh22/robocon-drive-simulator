@@ -3,9 +3,10 @@ body.lab-page { overflow: hidden; }
 #lab { display: flex; flex-direction: column; height: 100vh; }
 
 #topbar {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  display: flex; flex-direction: column; gap: 6px;
   padding: 8px 12px; background: var(--panel); border-bottom: 4px solid var(--primary);
 }
+#topbar .tbrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 #topbar .title { font-size: 24px; font-weight: 800; margin-right: 6px; white-space: nowrap; }
 #topbar .group { display: flex; gap: 6px; align-items: center; }
 #topbar .sep { width: 2px; align-self: stretch; background: #c5d6f0; margin: 0 4px; }

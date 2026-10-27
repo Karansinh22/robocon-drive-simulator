@@ -1,10 +1,11 @@
 // CodeMirror 6 code editor: Python highlighting, line numbers, 4-space indent, error-line highlight.
 import { EditorView, basicSetup } from 'codemirror';
-import { EditorState, StateEffect, StateField, Annotation } from '@codemirror/state';
+import { EditorState, StateEffect, StateField, Annotation, Compartment } from '@codemirror/state';
 import { Decoration, keymap } from '@codemirror/view';
 import { indentUnit } from '@codemirror/language';
 import { indentWithTab } from '@codemirror/commands';
 import { python } from '@codemirror/lang-python';
+import { cpp } from '@codemirror/lang-cpp';
 
 // Marks changes we made ourselves (loading an example, moving a slider) so they do not count as "student typed".
 const programmatic = Annotation.define();
@@ -28,9 +29,11 @@ const errorLineField = StateField.define({
 });
 
 const MIN_FONT = 18, MAX_FONT = 40;
+const languageFor = (lang) => (lang === 'cpp' ? cpp() : python());
 
 /** onChange(byStudent: boolean) fires on every document change. */
-export function createEditor(parent, { doc = '', onChange = () => {}, fontSize = 20 } = {}) {
+export function createEditor(parent, { doc = '', onChange = () => {}, fontSize = 20, lang = 'python' } = {}) {
+  const language = new Compartment();
   parent.style.setProperty('--editor-font', `${fontSize}px`);
   const view = new EditorView({
     parent,
@@ -39,7 +42,7 @@ export function createEditor(parent, { doc = '', onChange = () => {}, fontSize =
       extensions: [
         basicSetup,
         EditorView.lineWrapping,
-        python(),
+        language.of(languageFor(lang)),
         indentUnit.of('    '),
         EditorState.tabSize.of(4),
         keymap.of([indentWithTab]),
@@ -83,10 +86,18 @@ export function createEditor(parent, { doc = '', onChange = () => {}, fontSize =
       view.requestMeasure();
       return size;
     },
-    /** Update the number of one entry in the PARAMS dict, e.g. "deadzone": 8  ->  "deadzone": 12 */
-    setParamValue(key, value, isInt) {
+    setLanguage(lang) { view.dispatch({ effects: language.reconfigure(languageFor(lang)) }); },
+    /**
+     * Update the number of one tunable value in the text.
+     * Python:  "deadzone": 8  ->  "deadzone": 12      C++:  PARAM int deadzone = 8;  ->  = 12;
+     */
+    setParamValue(key, value, isInt, lang = 'python') {
       const text = view.state.doc.toString();
-      const re = new RegExp(`(["']${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']\\s*:\\s*)(-?\\d+(?:\\.\\d+)?(?:[eE][-+]?\\d+)?)`);
+      const name = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const number = '(-?\\d+(?:\\.\\d+)?(?:[eE][-+]?\\d+)?)';
+      const re = lang === 'cpp'
+        ? new RegExp(`(PARAM\\s+[\\w ]*?\\b${name}\\s*=\\s*)${number}`)
+        : new RegExp(`(["']${name}["']\\s*:\\s*)${number}`);
       const m = re.exec(text);
       if (!m) return false;
       const from = m.index + m[1].length;
